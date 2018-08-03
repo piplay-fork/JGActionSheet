@@ -587,8 +587,8 @@ static BOOL disableCustomEasing = NO;
     if (_targetView && !CGRectEqualToRect(self.bounds, _targetView.bounds)) {
         disableCustomEasing = YES;
         [UIView animateWithDuration:(iPad ? 0.4 : 0.3) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
-            if (_anchoredAtPoint) {
-                [self moveToPoint:_anchorPoint arrowDirection:_anchoredArrowDirection animated:NO];
+            if (self->_anchoredAtPoint) {
+                [self moveToPoint:self->_anchorPoint arrowDirection:self->_anchoredArrowDirection animated:NO];
             }
             else {
                 [self layoutSheetInitial:NO];
@@ -831,7 +831,7 @@ static BOOL disableCustomEasing = NO;
     NSAssert(self.visible, @"Action Sheet requires to be visible in order to move the anchor point!");
     
     void (^changes)(void) = ^{
-        self.frame = _targetView.bounds;
+        self.frame = self->_targetView.bounds;
         
         CGRect finalFrame = CGRectZero;
         
@@ -841,20 +841,20 @@ static BOOL disableCustomEasing = NO;
         
         if (arrowDirection == JGActionSheetArrowDirectionRight) {
             finalFrame.size.width = point.x-arrowHeight;
-            finalFrame.size.height = CGRectGetHeight(_targetView.bounds);
+            finalFrame.size.height = CGRectGetHeight(self->_targetView.bounds);
         }
         else if (arrowDirection == JGActionSheetArrowDirectionLeft) {
-            finalFrame.size.width = CGRectGetWidth(_targetView.bounds)-point.x-arrowHeight;
-            finalFrame.size.height = CGRectGetHeight(_targetView.bounds);
+            finalFrame.size.width = CGRectGetWidth(self->_targetView.bounds)-point.x-arrowHeight;
+            finalFrame.size.height = CGRectGetHeight(self->_targetView.bounds);
             finalFrame.origin.x = point.x+arrowHeight;
         }
         else if (arrowDirection == JGActionSheetArrowDirectionTop) {
-            finalFrame.size.width = CGRectGetWidth(_targetView.bounds);
-            finalFrame.size.height = CGRectGetHeight(_targetView.bounds)-point.y-arrowHeight;
+            finalFrame.size.width = CGRectGetWidth(self->_targetView.bounds);
+            finalFrame.size.height = CGRectGetHeight(self->_targetView.bounds)-point.y-arrowHeight;
             finalFrame.origin.y = point.y+arrowHeight;
         }
         else if (arrowDirection == JGActionSheetArrowDirectionBottom) {
-            finalFrame.size.width = CGRectGetWidth(_targetView.bounds);
+            finalFrame.size.width = CGRectGetWidth(self->_targetView.bounds);
             finalFrame.size.height = point.y-arrowHeight;
         }
         else {
@@ -868,14 +868,14 @@ static BOOL disableCustomEasing = NO;
         
         finalFrame = UIEdgeInsetsInsetRect(finalFrame, self.insets);
         
-        _scrollViewHost.backgroundColor = [UIColor whiteColor];
+        self->_scrollViewHost.backgroundColor = [UIColor whiteColor];
         
-        _scrollViewHost.layer.cornerRadius = kHostsCornerRadius;
+        self->_scrollViewHost.layer.cornerRadius = kHostsCornerRadius;
         
-        _scrollViewHost.layer.shadowColor = [UIColor blackColor].CGColor;
-        _scrollViewHost.layer.shadowOffset = CGSizeZero;
-        _scrollViewHost.layer.shadowRadius = kShadowRadius;
-        _scrollViewHost.layer.shadowOpacity = kShadowOpacity;
+        self->_scrollViewHost.layer.shadowColor = [UIColor blackColor].CGColor;
+        self->_scrollViewHost.layer.shadowOffset = CGSizeZero;
+        self->_scrollViewHost.layer.shadowRadius = kShadowRadius;
+        self->_scrollViewHost.layer.shadowOpacity = kShadowOpacity;
         
         [self layoutSheetForFrame:finalFrame fitToRect:NO initialSetUp:YES continuous:YES];
         
@@ -967,16 +967,16 @@ static BOOL disableCustomEasing = NO;
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
     void (^completion)(void) = ^{
-        [_arrowView removeFromSuperview];
-        _arrowView = nil;
+        [self->_arrowView removeFromSuperview];
+        self->_arrowView = nil;
         
-        _targetView = nil;
+        self->_targetView = nil;
         
         [self removeFromSuperview];
         
-        _anchoredAtPoint = NO;
-        _anchoredArrowDirection = 0;
-        _anchorPoint = CGPointZero;
+        self->_anchoredAtPoint = NO;
+        self->_anchoredArrowDirection = 0;
+        self->_anchorPoint = CGPointZero;
         
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         
